@@ -7,7 +7,6 @@ import { CRIME_DATA, getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatRe
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLayer), { ssr: false });
-const CircleMarker = dynamic(() => import("react-leaflet").then(mod => mod.CircleMarker), { ssr: false });
 const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { ssr: false });
 const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
 
@@ -25,15 +24,15 @@ export function CrimeMap() {
     setIsClient(true);
   }, []);
 
-  const handleMarkerMouseOver = (point: any, event: any) => {
+  const handleMarkerMouseOver = (point: {longitude: number; latitude: number; report_time: string}, event: {target: {_container?: {getBoundingClientRect: () => DOMRect}}; originalEvent?: {clientX: number; clientY: number}}) => {
     const rect = event.target._container?.getBoundingClientRect();
     if (rect) {
       setHoveredPoint({
         longitude: point.longitude,
         latitude: point.latitude,
         report_time: point.report_time,
-        x: event.originalEvent?.clientX - rect.left || 0,
-        y: event.originalEvent?.clientY - rect.top || 0
+        x: (event.originalEvent?.clientX ?? 0) - rect.left,
+        y: (event.originalEvent?.clientY ?? 0) - rect.top
       });
     }
   };
@@ -43,8 +42,8 @@ export function CrimeMap() {
   };
 
   // Create custom marker HTML with icon and color
-  const createCustomMarker = (point: any) => {
-    const color = getCrimeColor(point.crime_id);
+  const createCustomMarker = (point: {crime_id?: string | null; crime_type: string}) => {
+    const color = getCrimeColor(point.crime_id ?? null);
     const icon = getCrimeTypeIcon(point.crime_type);
     const size = point.crime_id ? 44 : 36;
     
@@ -86,8 +85,8 @@ export function CrimeMap() {
           </div>
         </div>
       `,
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size / 2]
+      iconSize: [size, size] as [number, number],
+      iconAnchor: [size / 2, size / 2] as [number, number]
     };
   };
 
@@ -123,8 +122,9 @@ export function CrimeMap() {
         
         {CRIME_DATA.map((point, index) => {
           const markerConfig = createCustomMarker(point);
-          let L: any = null;
+          let L: typeof import('leaflet') | null = null;
           if (typeof window !== 'undefined') {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             L = require('leaflet');
           }
           

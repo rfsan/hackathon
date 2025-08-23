@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CrimeMap } from "@/components/map/crime-map";
 
 export const metadata = {
@@ -24,12 +25,12 @@ export default function MapaPage() {
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse mr-2"></div>
                 <span className="text-sm text-gray-700">En vivo</span>
               </div>
-              <a
+              <Link
                 href="/"
                 className="text-blue-600 hover:text-blue-800 transition-colors"
               >
                 ← Volver al Inicio
-              </a>
+              </Link>
             </div>
           </div>
         </div>
