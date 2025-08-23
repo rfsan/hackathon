@@ -2,6 +2,8 @@
 
 A WhatsApp-based crime reporting system for Colombia with AI-powered crime grouping and real-time visualization.
 
+Will be named "Dani Denuncia"
+
 ## 📋 Project Overview
 
 This system enables citizens to report crimes through WhatsApp by sending text, images, audio, videos, and location data. The platform automatically groups related reports into crime incidents using AI analysis and displays them on an interactive real-time map.
