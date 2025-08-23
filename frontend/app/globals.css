@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 :root {
   --background: 0 0% 100%;
@@ -69,4 +70,18 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Custom Leaflet marker styles */
+.custom-crime-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-crime-marker div {
+  transition: transform 0.2s ease;
+}
+
+.custom-crime-marker:hover div {
+  transform: scale(1.1);
 }

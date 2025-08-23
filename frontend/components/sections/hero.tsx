@@ -66,6 +66,15 @@ export function HeroSection() {
               Reportar Crimen Ahora
             </Button>
             <Button
+              onClick={() => window.location.href = '/mapa'}
+              size="lg"
+              variant="default"
+              className="text-lg px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+            >
+              <span className="mr-2">🗺️</span>
+              Ver Mapa en Tiempo Real
+            </Button>
+            <Button
               onClick={scrollToHowItWorks}
               size="lg"
               variant="outline"
