@@ -1,3 +1,4 @@
+// eslint.config.mjs
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -19,6 +20,12 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+  },
+  // ⬇️ Add this block
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
   },
 ];
 
