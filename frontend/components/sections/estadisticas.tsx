@@ -17,7 +17,6 @@ function useCountUp(end: string, duration: number = 2000) {
     }
 
     let startTime: number;
-    const startValue = 0;
 
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;

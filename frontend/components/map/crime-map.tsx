@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { CRIME_DATA, getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
+import { getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
+import { useRealTimeReports } from "@/lib/hooks/useRealTimeReports";
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
@@ -11,6 +12,82 @@ const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { 
 const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
 
 export function CrimeMap() {
+  // Test basic Supabase connection step by step
+  const [reports, setReports] = useState([
+    {
+      report_id: '1',
+      longitude: -74.0721,
+      latitude: 4.7110,
+      crime_category: 'robo_personas',
+      crime_id: 'crime-001',
+      report_time: '2024-08-23T10:30:00Z'
+    },
+    {
+      report_id: '2',
+      longitude: -74.0690,
+      latitude: 4.7200,
+      crime_category: 'hurto_vehiculos',
+      crime_id: null,
+      report_time: '2024-08-23T11:15:00Z'
+    }
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const [isPolling, setIsPolling] = useState(false);
+
+  // Fetch data from our API route with 30-second polling
+  useEffect(() => {
+    const fetchReports = async (isPollingRequest = false) => {
+      try {
+        if (!isPollingRequest) setLoading(true)
+        if (isPollingRequest) setIsPolling(true)
+        
+        console.log(isPollingRequest ? '🔄 Polling for updates...' : 'Fetching reports from API...')
+        
+        const response = await fetch('/api/reports')
+        const result = await response.json()
+        
+        if (result.success && result.data) {
+          const previousCount = reports.length
+          const newCount = result.data.length
+          
+          setReports(result.data)
+          setLastUpdate(new Date())
+          
+          if (isPollingRequest && newCount > previousCount) {
+            console.log('🆕 New reports detected!', `${previousCount} → ${newCount}`)
+          } else {
+            console.log('✅ Successfully loaded', result.data.length, 'reports')
+          }
+        } else {
+          throw new Error(result.error || 'Failed to fetch reports')
+        }
+      } catch (err) {
+        console.error('❌ Failed to fetch reports:', err)
+        if (!isPollingRequest) {
+          setError(err instanceof Error ? err.message : 'Unknown error')
+        }
+        // Keep existing data on polling errors
+      } finally {
+        if (!isPollingRequest) setLoading(false)
+        if (isPollingRequest) setIsPolling(false)
+      }
+    }
+
+    // Initial fetch
+    fetchReports()
+
+    // Set up polling every 30 seconds
+    const pollInterval = setInterval(() => {
+      fetchReports(true)
+    }, 30000)
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(pollInterval)
+    }
+  }, []); // Empty dependency array - we want this to run once and set up polling
   const [hoveredPoint, setHoveredPoint] = useState<{
     longitude: number;
     latitude: number;
@@ -42,9 +119,9 @@ export function CrimeMap() {
   };
 
   // Create custom marker HTML with icon and color
-  const createCustomMarker = (point: {crime_id?: string | null; crime_type: string}) => {
+  const createCustomMarker = (point: {crime_id?: string | null; crime_category: string}) => {
     const color = getCrimeColor(point.crime_id ?? null);
-    const icon = getCrimeTypeIcon(point.crime_type);
+    const icon = getCrimeTypeIcon(point.crime_category);
     const size = point.crime_id ? 44 : 36;
     
     return {
@@ -90,7 +167,7 @@ export function CrimeMap() {
     };
   };
 
-  if (!isClient) {
+  if (!isClient || loading) {
     return (
       <div className="relative flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl shadow-2xl flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -99,7 +176,21 @@ export function CrimeMap() {
             <div className="text-white text-2xl">🗺️</div>
           </div>
           <div className="text-gray-700 text-xl font-medium">Cargando Mapa de Crímenes</div>
-          <div className="text-gray-500 text-sm mt-2">Preparando visualización en tiempo real...</div>
+          <div className="text-gray-500 text-sm mt-2">
+            {loading ? 'Conectando con base de datos...' : 'Preparando visualización en tiempo real...'}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="relative flex-1 bg-gradient-to-br from-red-50 to-red-100 rounded-xl shadow-2xl flex items-center justify-center overflow-hidden">
+        <div className="text-center z-10">
+          <div className="text-red-600 text-6xl mb-4">⚠️</div>
+          <div className="text-red-700 text-xl font-medium">Error al cargar datos</div>
+          <div className="text-red-600 text-sm mt-2">{error}</div>
         </div>
       </div>
     );
@@ -120,7 +211,7 @@ export function CrimeMap() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        {CRIME_DATA.map((point, index) => {
+        {reports.map((point, index) => {
           const markerConfig = createCustomMarker(point);
           let L: typeof import('leaflet') | null = null;
           if (typeof window !== 'undefined') {
@@ -149,11 +240,11 @@ export function CrimeMap() {
                 <div className="p-4 min-w-[240px] bg-gradient-to-br from-white to-gray-50">
                   <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-200">
                     <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 text-2xl shadow-sm">
-                      {getCrimeTypeIcon(point.crime_type)}
+                      {getCrimeTypeIcon(point.crime_category)}
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-900 text-lg leading-tight">
-                        {point.crime_id ? point.crime_id : 'Sin Agrupar'}
+                        {point.crime_id ? `Crime-${point.crime_id.substring(0, 8)}` : 'Sin Agrupar'}
                       </h3>
                       <div className="flex items-center gap-1 mt-1">
                         {point.crime_id ? (
@@ -174,7 +265,7 @@ export function CrimeMap() {
                       <span className="text-blue-600">📋</span>
                       <div>
                         <span className="text-xs text-gray-500 uppercase tracking-wide font-medium">Tipo</span>
-                        <div className="text-sm font-medium text-gray-900">{getCrimeTypeName(point.crime_type)}</div>
+                        <div className="text-sm font-medium text-gray-900">{getCrimeTypeName(point.crime_category)}</div>
                       </div>
                     </div>
                     
@@ -235,13 +326,13 @@ export function CrimeMap() {
             <span className="text-blue-600">🆔</span>
             <h4 className="font-semibold text-gray-800">Crime IDs</h4>
           </div>
-          {Array.from(new Set(CRIME_DATA.filter(d => d.crime_id).map(d => d.crime_id))).map(crimeId => (
+          {Array.from(new Set(reports.filter(d => d.crime_id).map(d => d.crime_id))).map(crimeId => (
             <div key={crimeId} className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
               <div 
                 className="w-5 h-5 rounded-full mr-3 border-2 border-white shadow-md flex-shrink-0"
                 style={{ backgroundColor: getCrimeColor(crimeId) }}
               ></div>
-              <span className="font-medium text-gray-700">{crimeId}</span>
+              <span className="font-medium text-gray-700">Crime-{crimeId?.substring(0, 8)}</span>
             </div>
           ))}
           <div className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
@@ -256,7 +347,7 @@ export function CrimeMap() {
             <span className="text-red-600">🏷️</span>
             <h4 className="font-semibold text-gray-800">Tipos de Crimen</h4>
           </div>
-          {Array.from(new Set(CRIME_DATA.map(d => d.crime_type))).map(crimeType => (
+          {Array.from(new Set(reports.map(d => d.crime_category))).map(crimeType => (
             <div key={crimeType} className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
               <span className="text-xl mr-3 flex-shrink-0">{getCrimeTypeIcon(crimeType)}</span>
               <span className="text-xs font-medium text-gray-700 leading-tight">{getCrimeTypeName(crimeType)}</span>
@@ -289,28 +380,31 @@ export function CrimeMap() {
             <span className="text-white text-sm">📈</span>
           </div>
           <h3 className="font-bold text-gray-900 text-lg">Estadísticas en Vivo</h3>
-          <div className="flex items-center">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${isPolling ? 'bg-blue-400 animate-ping' : 'bg-green-400 animate-pulse'}`}></div>
+            <span className="text-xs text-gray-600">
+              {isPolling ? 'Actualizando...' : `Actualizado: ${lastUpdate.toLocaleTimeString()}`}
+            </span>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
             <div className="text-3xl font-bold text-blue-600 mb-1">
-              {CRIME_DATA.length}
+              {reports.length}
             </div>
             <div className="text-gray-700 font-medium">Total Reportes</div>
             <div className="text-xs text-blue-600 mt-1">📊 Todos los datos</div>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
             <div className="text-3xl font-bold text-green-600 mb-1">
-              {new Set(CRIME_DATA.filter(d => d.crime_id).map(d => d.crime_id)).size}
+              {new Set(reports.filter(d => d.crime_id).map(d => d.crime_id)).size}
             </div>
             <div className="text-gray-700 font-medium">Crímenes Agrupados</div>
             <div className="text-xs text-green-600 mt-1">🤖 Por IA</div>
           </div>
           <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200">
             <div className="text-3xl font-bold text-orange-600 mb-1">
-              {CRIME_DATA.filter(d => !d.crime_id).length}
+              {reports.filter(d => !d.crime_id).length}
             </div>
             <div className="text-gray-700 font-medium">Sin Agrupar</div>
             <div className="text-xs text-orange-600 mt-1">⏳ Pendientes</div>
@@ -326,7 +420,9 @@ export function CrimeMap() {
         
         <div className="mt-4 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200">
           <div className="text-xs text-gray-600 text-center">
-            <span className="font-semibold text-indigo-700">Actualización automática cada 30 segundos</span>
+            <span className="font-semibold text-indigo-700">
+              🔄 Actualizando cada 30 segundos • {reports.length} reportes activos
+            </span>
           </div>
         </div>
       </div>

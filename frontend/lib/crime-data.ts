@@ -4,38 +4,48 @@ export interface CrimeDataPoint {
   crime_id: string | null;
   crime_type: string;
   report_time: string;
+  userId?: string; // WhatsApp number or user identifier
+  reportId?: string; // Unique report identifier
 }
 
 // Hardcoded crime data for Colombian cities
 export const CRIME_DATA: CrimeDataPoint[] = [
-  // Bogotá area crimes
+  // Bogotá area crimes - Auto-grouped by user session
   {
     longitude: -74.0721,
     latitude: 4.7110,
     crime_id: "crime-001",
     crime_type: "robo_personas",
-    report_time: "2024-08-23T10:30:00Z"
+    report_time: "2024-08-23T10:30:00Z",
+    userId: "+573001234567",
+    reportId: "report-001"
   },
   {
     longitude: -74.0765,
     latitude: 4.7115,
-    crime_id: "crime-001", // Same crime_id = grouped incident
+    crime_id: "crime-001", // Auto-grouped: same user within 1-hour window
     crime_type: "robo_personas",
-    report_time: "2024-08-23T10:45:00Z"
+    report_time: "2024-08-23T10:45:00Z",
+    userId: "+573001234567",
+    reportId: "report-002"
   },
   {
     longitude: -74.0690,
     latitude: 4.7200,
     crime_id: "crime-002",
     crime_type: "hurto_vehiculos",
-    report_time: "2024-08-23T11:15:00Z"
+    report_time: "2024-08-23T11:15:00Z",
+    userId: "+573007654321",
+    reportId: "report-003"
   },
   {
     longitude: -74.0820,
     latitude: 4.6980,
-    crime_id: null, // Unassigned report
+    crime_id: null, // Single report - no grouping yet
     crime_type: "lesiones_personales",
-    report_time: "2024-08-23T12:00:00Z"
+    report_time: "2024-08-23T12:00:00Z",
+    userId: "+573009876543",
+    reportId: "report-004"
   },
   {
     longitude: -74.0580,

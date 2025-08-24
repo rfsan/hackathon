@@ -7,10 +7,10 @@
 4. ✅ Configure Row Level Security policies
 
 ## Phase 2: Database Setup
-1. Create User, Report, and Crime tables
+1. ✅ Create User, Report, and Crime tables
 2. Add PostGIS indexes for spatial queries
 3. Set up database functions for crime grouping
-4. Configure real-time subscriptions
+4. Configure real-time subscriptions 
 
 ## Phase 3: Edge Functions
 1. Deploy crime grouping cron job

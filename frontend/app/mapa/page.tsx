@@ -1,10 +1,7 @@
+"use client";
+
 import Link from "next/link";
 import { CrimeMap } from "@/components/map/crime-map";
-
-export const metadata = {
-  title: "Mapa de Crímenes en Tiempo Real | CrimenAlert Colombia",
-  description: "Visualiza los crímenes reportados por WhatsApp en tiempo real en Colombia. Mapa interactivo con datos agrupados por inteligencia artificial.",
-};
 
 export default function MapaPage() {
   return (
