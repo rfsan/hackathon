@@ -62,7 +62,7 @@ CREATE TABLE "Report" (
   user_id uuid REFERENCES "User"(user_id),
   report_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   report_path text UNIQUE, -- Path to Supabase Storage folder
-  report_details jsonb,
+  report_details text,
   messages jsonb, -- Contains WhatsApp messages + AI image descriptions
   location geometry(POINT, 4326), -- PostGIS point
   priority_level integer CHECK (priority_level BETWEEN 1 AND 5),

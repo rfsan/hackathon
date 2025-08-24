@@ -312,12 +312,6 @@ export function CrimeMap() {
       
       {/* Legend */}
       <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-gray-200 p-5 max-w-xs z-[1000] max-h-[70vh] overflow-y-auto">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-sm font-bold">📊</span>
-          </div>
-          <h3 className="font-bold text-gray-900 text-lg">Leyenda</h3>
-        </div>
         
         {/* Crime IDs */}
         <div className="space-y-2 text-sm mb-5">
@@ -378,7 +372,7 @@ export function CrimeMap() {
           <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
             <span className="text-white text-sm">📈</span>
           </div>
-          <h3 className="font-bold text-gray-900 text-lg">Estadísticas en Vivo</h3>
+          <h3 className="font-bold text-gray-900 text-lg">Estadísticas en vivo</h3>
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${isPolling ? 'bg-blue-400 animate-ping' : 'bg-green-400 animate-pulse'}`}></div>
             <span className="text-xs text-gray-600">
@@ -386,45 +380,26 @@ export function CrimeMap() {
             </span>
           </div>
         </div>
+
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
             <div className="text-3xl font-bold text-blue-600 mb-1">
               {reports.length}
             </div>
-            <div className="text-gray-700 font-medium">Total Reportes</div>
-            <div className="text-xs text-blue-600 mt-1">📊 Todos los datos</div>
+            <div className="text-gray-700 font-medium">Total reportes</div>
+            <div className="text-xs text-blue-600 mt-1">📊</div>
           </div>
+
           <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
             <div className="text-3xl font-bold text-green-600 mb-1">
               {new Set(reports.filter(d => d.crime_id).map(d => d.crime_id)).size}
             </div>
-            <div className="text-gray-700 font-medium">Crímenes Agrupados</div>
-            <div className="text-xs text-green-600 mt-1">🤖 Por IA</div>
-          </div>
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200">
-            <div className="text-3xl font-bold text-orange-600 mb-1">
-              {reports.filter(d => !d.crime_id).length}
-            </div>
-            <div className="text-gray-700 font-medium">Sin Agrupar</div>
-            <div className="text-xs text-orange-600 mt-1">⏳ Pendientes</div>
-          </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200">
-            <div className="text-3xl font-bold text-purple-600 mb-1">
-              95%
-            </div>
-            <div className="text-gray-700 font-medium">Precisión IA</div>
-            <div className="text-xs text-purple-600 mt-1">🎯 Exactitud</div>
-          </div>
-        </div>
-        
-        <div className="mt-4 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200">
-          <div className="text-xs text-gray-600 text-center">
-            <span className="font-semibold text-indigo-700">
-              🔄 Actualizando cada 30 segundos • {reports.length} reportes activos
-            </span>
+            <div className="text-gray-700 font-medium">Crímenes detectados</div>
+            <div className="text-xs text-green-600 mt-1">🔎</div>
           </div>
         </div>
       </div>
+
     </div>
   );
 }

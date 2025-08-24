@@ -11,10 +11,10 @@ export default function MapaPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Mapa de Crímenes en Tiempo Real
+                Mapa de crímenes en tiempo real
               </h1>
               <p className="mt-1 text-gray-600">
-                Visualización interactiva de reportes agrupados por IA
+                Visualización interactiva de reportes agrupados por crimen
               </p>
             </div>
             <div className="flex items-center space-x-4">
@@ -26,7 +26,7 @@ export default function MapaPage() {
                 href="/"
                 className="text-blue-600 hover:text-blue-800 transition-colors"
               >
-                ← Volver al Inicio
+                ← Volver al inicio
               </Link>
             </div>
           </div>
