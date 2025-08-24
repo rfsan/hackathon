@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
-import { getFileIcon, getFileTypeColor, formatFileSize, type ReportFile } from "@/lib/file-utils";
+import { getFileIcon, getFileTypeColor, formatFileSize, getFileUrl, type ReportFile } from "@/lib/file-utils";
 
 interface Crime {
   crime_id: string;
@@ -274,17 +274,114 @@ export default function CrimeDetailPage() {
                               <div className="text-xs text-gray-600 mb-2 font-medium">
                                 Archivos adjuntos ({report.files.length})
                               </div>
-                              <div className="flex flex-wrap gap-2">
-                                {report.files.map((file, fileIndex) => (
-                                  <div
-                                    key={fileIndex}
-                                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getFileTypeColor(file.type)}`}
-                                  >
-                                    <span className="text-sm">{getFileIcon(file.extension, file.type)}</span>
-                                    <span className="uppercase">{file.extension || 'archivo'}</span>
-                                    <span className="text-xs opacity-75">({formatFileSize(file.size)})</span>
+                              
+                              {/* Audio files first */}
+                              {report.files
+                                .filter(file => file.type === 'audio')
+                                .map((file, fileIndex) => (
+                                  <div key={`audio-${fileIndex}`} className="mb-3">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <span className="text-lg">
+                                        {file.extension === 'opus' ? '🎤' : '🎵'}
+                                      </span>
+                                      <span className="text-sm font-medium text-gray-700">
+                                        {file.extension === 'opus' ? 'Mensaje de voz' : 'Audio'}
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        ({file.extension.toUpperCase()} - {formatFileSize(file.size)})
+                                      </span>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-3">
+                                      <audio 
+                                        controls 
+                                        className="w-full"
+                                        preload="metadata"
+                                        style={{ height: '40px' }}
+                                      >
+                                        {/* OPUS files */}
+                                        {file.extension === 'opus' && (
+                                          <>
+                                            <source 
+                                              src={getFileUrl(report.report_id, file.name)} 
+                                              type="audio/ogg; codecs=opus" 
+                                            />
+                                            <source 
+                                              src={getFileUrl(report.report_id, file.name)} 
+                                              type="audio/ogg" 
+                                            />
+                                          </>
+                                        )}
+                                        {/* MP3 files */}
+                                        {file.extension === 'mp3' && (
+                                          <source 
+                                            src={getFileUrl(report.report_id, file.name)} 
+                                            type="audio/mpeg" 
+                                          />
+                                        )}
+                                        {/* WAV files */}
+                                        {file.extension === 'wav' && (
+                                          <source 
+                                            src={getFileUrl(report.report_id, file.name)} 
+                                            type="audio/wav" 
+                                          />
+                                        )}
+                                        {/* M4A files */}
+                                        {file.extension === 'm4a' && (
+                                          <source 
+                                            src={getFileUrl(report.report_id, file.name)} 
+                                            type="audio/mp4" 
+                                          />
+                                        )}
+                                        {/* OGG files */}
+                                        {file.extension === 'ogg' && (
+                                          <source 
+                                            src={getFileUrl(report.report_id, file.name)} 
+                                            type="audio/ogg" 
+                                          />
+                                        )}
+                                        Tu navegador no soporta la reproducción de audio.
+                                      </audio>
+                                    </div>
                                   </div>
                                 ))}
+
+                              {/* Image files */}
+                              {report.files
+                                .filter(file => file.type === 'image')
+                                .map((file, fileIndex) => (
+                                  <div key={`image-${fileIndex}`} className="mb-3">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <span className="text-lg">📷</span>
+                                      <span className="text-sm font-medium text-gray-700">Imagen</span>
+                                      <span className="text-xs text-gray-500">
+                                        ({file.extension.toUpperCase()} - {formatFileSize(file.size)})
+                                      </span>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-3">
+                                      <img 
+                                        src={getFileUrl(report.report_id, file.name)}
+                                        alt="Evidencia fotográfica"
+                                        className="w-full max-w-sm h-auto rounded-lg shadow-sm"
+                                        loading="lazy"
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                              
+                              {/* Other file types as badges */}
+                              <div className="flex flex-wrap gap-2">
+                                {report.files
+                                  .filter(file => file.type !== 'audio' && file.type !== 'image')
+                                  .map((file, fileIndex) => (
+                                    <div
+                                      key={fileIndex}
+                                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getFileTypeColor(file.type)}`}
+                                    >
+                                      <span className="text-sm">{getFileIcon(file.extension, file.type)}</span>
+                                      <span className="uppercase">{file.extension || 'archivo'}</span>
+                                      <span className="text-xs opacity-75">({formatFileSize(file.size)})</span>
+                                    </div>
+                                  ))}
                               </div>
                             </div>
                           )}

@@ -96,3 +96,14 @@ export const getFileTypeName = (type: string): string => {
       return 'Archivo';
   }
 };
+
+// Function to get file URL from Supabase Storage
+export const getFileUrl = (reportId: string, fileName: string): string => {
+  // For public files in the crime-reports bucket
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (supabaseUrl) {
+    return `${supabaseUrl}/storage/v1/object/public/crime-reports/${reportId}/${fileName}`;
+  }
+  // Fallback to a mock URL structure
+  return `/api/files/${reportId}/${fileName}`;
+};
