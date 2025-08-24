@@ -97,9 +97,9 @@ export function HeroSection() {
               <p className="text-gray-600">Agrupación inteligente de reportes</p>
             </div>
             <div className="bg-white/70 backdrop-blur-sm rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="text-3xl mb-3">🔒</div>
-              <h3 className="font-semibold text-gray-900 mb-2">Completamente Anónimo</h3>
-              <p className="text-gray-600">Tu identidad está protegida</p>
+              <div className="text-3xl mb-3">📊</div>
+              <h3 className="font-semibold text-gray-900 mb-2">Datos en Tiempo Real</h3>
+              <p className="text-gray-600">Visualización actualizada constantemente</p>
             </div>
           </div>
 

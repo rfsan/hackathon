@@ -108,7 +108,7 @@ export function ComoFuncionaSection() {
                 </li>
                 <li className="flex items-center">
                   <span className="text-green-500 mr-2">✓</span>
-                  Mantiene el anonimato de los reportantes
+                  Mejora la seguridad ciudadana con datos
                 </li>
               </ul>
             </div>

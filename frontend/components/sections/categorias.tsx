@@ -93,7 +93,7 @@ Por favor ayúdame con el proceso de reporte.`
               <ul className="space-y-3 text-gray-700">
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-1">•</span>
-                  Todos los reportes son completamente anónimos
+                  Los reportes se procesan automáticamente con IA
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-1">•</span>
