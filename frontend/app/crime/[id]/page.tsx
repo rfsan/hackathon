@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
+import { getFileIcon, getFileTypeColor, formatFileSize, type ReportFile } from "@/lib/file-utils";
 
 interface Crime {
   crime_id: string;
@@ -35,9 +36,14 @@ interface CrimeData {
   reports: Report[];
 }
 
+interface ReportWithFiles extends Report {
+  files?: ReportFile[];
+}
+
 export default function CrimeDetailPage() {
   const params = useParams();
   const [crimeData, setCrimeData] = useState<CrimeData | null>(null);
+  const [reportsWithFiles, setReportsWithFiles] = useState<ReportWithFiles[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,10 +66,33 @@ export default function CrimeDetailPage() {
         const reportsResult = await reportsResponse.json();
         
         if (crimeResult.success) {
+          const reports = reportsResult.success ? reportsResult.data : [];
           setCrimeData({
             crime: crimeResult.data,
-            reports: reportsResult.success ? reportsResult.data : []
+            reports: reports
           });
+
+          // Fetch files for each report
+          const reportsWithFilesPromises = reports.map(async (report: Report) => {
+            try {
+              const filesResponse = await fetch(`/api/reports/${report.report_id}/files`);
+              const filesResult = await filesResponse.json();
+              
+              return {
+                ...report,
+                files: filesResult.success ? filesResult.data : []
+              };
+            } catch (err) {
+              console.error(`Failed to fetch files for report ${report.report_id}:`, err);
+              return {
+                ...report,
+                files: []
+              };
+            }
+          });
+
+          const reportsWithFilesData = await Promise.all(reportsWithFilesPromises);
+          setReportsWithFiles(reportsWithFilesData);
         } else {
           throw new Error(crimeResult.error || 'Failed to fetch crime data');
         }
@@ -113,7 +142,7 @@ export default function CrimeDetailPage() {
   }
 
   const { crime, reports } = crimeData;
-  const sortedReports = reports.sort((a, b) => {
+  const sortedReports = reportsWithFiles.sort((a, b) => {
     const dateA = new Date(a.created_at || a.report_time || '');
     const dateB = new Date(b.created_at || b.report_time || '');
     return dateA.getTime() - dateB.getTime();
@@ -187,7 +216,7 @@ export default function CrimeDetailPage() {
             {/* Reports Timeline */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">
-                Línea de Tiempo - {reports.length} Reporte{reports.length !== 1 ? 's' : ''}
+                Línea de Tiempo - {sortedReports.length} Reporte{sortedReports.length !== 1 ? 's' : ''}
               </h2>
               
               <div className="space-y-6">
@@ -234,8 +263,29 @@ export default function CrimeDetailPage() {
                           )}
                           
                           {report.messages != null && (
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 mb-3">
                               Mensajes de WhatsApp incluidos
+                            </div>
+                          )}
+
+                          {/* File attachments */}
+                          {report.files && report.files.length > 0 && (
+                            <div className="mt-3 pt-3 border-t border-gray-200">
+                              <div className="text-xs text-gray-600 mb-2 font-medium">
+                                Archivos adjuntos ({report.files.length})
+                              </div>
+                              <div className="flex flex-wrap gap-2">
+                                {report.files.map((file, fileIndex) => (
+                                  <div
+                                    key={fileIndex}
+                                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getFileTypeColor(file.type)}`}
+                                  >
+                                    <span className="text-sm">{getFileIcon(file.extension, file.type)}</span>
+                                    <span className="uppercase">{file.extension || 'archivo'}</span>
+                                    <span className="text-xs opacity-75">({formatFileSize(file.size)})</span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           )}
                         </div>
