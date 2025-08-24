@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
 import { getFileIcon, getFileTypeColor, formatFileSize, getFileUrl, getDirectFileUrl, type ReportFile } from "@/lib/file-utils";
-import { AudioDebug } from "@/components/debug/audio-debug";
 
 interface Crime {
   crime_id: string;
@@ -299,16 +298,6 @@ export default function CrimeDetailPage() {
                                         preload="none"
                                         crossOrigin="anonymous"
                                         style={{ height: '40px' }}
-                                        onError={(e) => {
-                                          console.error('Audio playback error:', e);
-                                          const audio = e.target as HTMLAudioElement;
-                                          console.error('Audio src:', audio.currentSrc);
-                                          console.error('Network state:', audio.networkState);
-                                          console.error('Ready state:', audio.readyState);
-                                        }}
-                                        onCanPlay={() => console.log('Audio can play')}
-                                        onLoadStart={() => console.log('Loading started')}
-                                        onLoadedData={() => console.log('Data loaded')}
                                       >
                                         {/* OPUS files - try multiple approaches */}
                                         {file.extension === 'opus' && (
@@ -387,15 +376,6 @@ export default function CrimeDetailPage() {
                                         )}
                                         Tu navegador no soporta la reproducción de audio.
                                       </audio>
-                                      
-                                      {/* Debug component for troubleshooting */}
-                                      {process.env.NODE_ENV === 'development' && (
-                                        <AudioDebug 
-                                          reportId={report.report_id}
-                                          fileName={file.name}
-                                          extension={file.extension}
-                                        />
-                                      )}
                                     </div>
                                   </div>
                                 ))}
