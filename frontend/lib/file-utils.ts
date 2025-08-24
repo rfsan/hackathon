@@ -102,8 +102,20 @@ export const getFileUrl = (reportId: string, fileName: string): string => {
   // For public files in the crime-reports bucket
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (supabaseUrl) {
-    return `${supabaseUrl}/storage/v1/object/public/crime-reports/${reportId}/${fileName}`;
+    // Handle different file path structures
+    // Some files are stored as reportId/fileName, others as just the fileName
+    const cleanFileName = fileName.startsWith(`${reportId}/`) ? fileName : `${reportId}/${fileName}`;
+    return `${supabaseUrl}/storage/v1/object/public/crime-reports/${cleanFileName}`;
   }
   // Fallback to a mock URL structure
   return `/api/files/${reportId}/${fileName}`;
+};
+
+// Function to get direct file URL (alternative approach)
+export const getDirectFileUrl = (fileName: string): string => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (supabaseUrl) {
+    return `${supabaseUrl}/storage/v1/object/public/crime-reports/${fileName}`;
+  }
+  return `/api/files/${fileName}`;
 };

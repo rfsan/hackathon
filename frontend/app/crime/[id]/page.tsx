@@ -4,7 +4,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
-import { getFileIcon, getFileTypeColor, formatFileSize, getFileUrl, type ReportFile } from "@/lib/file-utils";
+import { getFileIcon, getFileTypeColor, formatFileSize, getFileUrl, getDirectFileUrl, type ReportFile } from "@/lib/file-utils";
+import { AudioDebug } from "@/components/debug/audio-debug";
 
 interface Crime {
   crime_id: string;
@@ -295,15 +296,88 @@ export default function CrimeDetailPage() {
                                       <audio 
                                         controls 
                                         className="w-full"
-                                        preload="metadata"
+                                        preload="none"
+                                        crossOrigin="anonymous"
                                         style={{ height: '40px' }}
+                                        onError={(e) => {
+                                          console.error('Audio playback error:', e);
+                                          const audio = e.target as HTMLAudioElement;
+                                          console.error('Audio src:', audio.currentSrc);
+                                          console.error('Network state:', audio.networkState);
+                                          console.error('Ready state:', audio.readyState);
+                                        }}
+                                        onCanPlay={() => console.log('Audio can play')}
+                                        onLoadStart={() => console.log('Loading started')}
+                                        onLoadedData={() => console.log('Data loaded')}
                                       >
-                                        {/* OPUS files */}
+                                        {/* OPUS files - try multiple approaches */}
                                         {file.extension === 'opus' && (
                                           <>
+                                            {/* Try proxy API first (best for streaming) */}
+                                            <source 
+                                              src={`/api/files/${report.report_id}/${file.name.split('/').pop()}`}
+                                              type="audio/ogg; codecs=opus" 
+                                            />
+                                            <source 
+                                              src={`/api/files/${report.report_id}/${file.name.split('/').pop()}`}
+                                              type="audio/ogg" 
+                                            />
+                                            {/* Fallback to direct storage */}
+                                            <source 
+                                              src={getDirectFileUrl(file.name)} 
+                                              type="audio/ogg; codecs=opus" 
+                                            />
+                                            <source 
+                                              src={getDirectFileUrl(file.name)} 
+                                              type="audio/ogg" 
+                                            />
+                                          </>
+                                        )}
+                                        {/* MP3 files */}
+                                        {file.extension === 'mp3' && (
+                                          <>
+                                            <source 
+                                              src={getDirectFileUrl(file.name)} 
+                                              type="audio/mpeg" 
+                                            />
                                             <source 
                                               src={getFileUrl(report.report_id, file.name)} 
-                                              type="audio/ogg; codecs=opus" 
+                                              type="audio/mpeg" 
+                                            />
+                                          </>
+                                        )}
+                                        {/* WAV files */}
+                                        {file.extension === 'wav' && (
+                                          <>
+                                            <source 
+                                              src={getDirectFileUrl(file.name)} 
+                                              type="audio/wav" 
+                                            />
+                                            <source 
+                                              src={getFileUrl(report.report_id, file.name)} 
+                                              type="audio/wav" 
+                                            />
+                                          </>
+                                        )}
+                                        {/* M4A files */}
+                                        {file.extension === 'm4a' && (
+                                          <>
+                                            <source 
+                                              src={getDirectFileUrl(file.name)} 
+                                              type="audio/mp4" 
+                                            />
+                                            <source 
+                                              src={getFileUrl(report.report_id, file.name)} 
+                                              type="audio/mp4" 
+                                            />
+                                          </>
+                                        )}
+                                        {/* OGG files */}
+                                        {file.extension === 'ogg' && (
+                                          <>
+                                            <source 
+                                              src={getDirectFileUrl(file.name)} 
+                                              type="audio/ogg" 
                                             />
                                             <source 
                                               src={getFileUrl(report.report_id, file.name)} 
@@ -311,36 +385,17 @@ export default function CrimeDetailPage() {
                                             />
                                           </>
                                         )}
-                                        {/* MP3 files */}
-                                        {file.extension === 'mp3' && (
-                                          <source 
-                                            src={getFileUrl(report.report_id, file.name)} 
-                                            type="audio/mpeg" 
-                                          />
-                                        )}
-                                        {/* WAV files */}
-                                        {file.extension === 'wav' && (
-                                          <source 
-                                            src={getFileUrl(report.report_id, file.name)} 
-                                            type="audio/wav" 
-                                          />
-                                        )}
-                                        {/* M4A files */}
-                                        {file.extension === 'm4a' && (
-                                          <source 
-                                            src={getFileUrl(report.report_id, file.name)} 
-                                            type="audio/mp4" 
-                                          />
-                                        )}
-                                        {/* OGG files */}
-                                        {file.extension === 'ogg' && (
-                                          <source 
-                                            src={getFileUrl(report.report_id, file.name)} 
-                                            type="audio/ogg" 
-                                          />
-                                        )}
                                         Tu navegador no soporta la reproducción de audio.
                                       </audio>
+                                      
+                                      {/* Debug component for troubleshooting */}
+                                      {process.env.NODE_ENV === 'development' && (
+                                        <AudioDebug 
+                                          reportId={report.report_id}
+                                          fileName={file.name}
+                                          extension={file.extension}
+                                        />
+                                      )}
                                     </div>
                                   </div>
                                 ))}
