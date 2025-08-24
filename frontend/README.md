@@ -70,7 +70,7 @@ npm run lint
 ### Configuración de WhatsApp
 Editar `lib/constants.ts`:
 ```typescript
-export const WHATSAPP_NUMBER = "+57 300 123 4567";
+export const WHATSAPP_NUMBER = "+57 313 426 9391";
 ```
 
 ## 📁 Estructura de Archivos

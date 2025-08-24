@@ -1,4 +1,4 @@
-export const WHATSAPP_NUMBER = "+57 300 123 4567";
+export const WHATSAPP_NUMBER = "+57 313 426 9391";
 
 export const CRIME_CATEGORIES = [
   {

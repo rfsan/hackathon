@@ -17,7 +17,7 @@ export const CRIME_DATA: CrimeDataPoint[] = [
     crime_id: "crime-001",
     crime_type: "robo_personas",
     report_time: "2024-08-23T10:30:00Z",
-    userId: "+573001234567",
+    userId: "+573134269391",
     reportId: "report-001"
   },
   {
@@ -26,7 +26,7 @@ export const CRIME_DATA: CrimeDataPoint[] = [
     crime_id: "crime-001", // Auto-grouped: same user within 1-hour window
     crime_type: "robo_personas",
     report_time: "2024-08-23T10:45:00Z",
-    userId: "+573001234567",
+    userId: "+573134269391",
     reportId: "report-002"
   },
   {
