@@ -171,8 +171,8 @@ export function CrimeMap() {
       <div className="relative flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl shadow-2xl flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="text-center z-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4 animate-spin">
-            <div className="text-white text-2xl">🗺️</div>
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
+            <img src="/logo.png" alt="Logo" className="w-16 h-16 object-contain" />
           </div>
           <div className="text-gray-700 text-xl font-medium">Cargando Mapa de Crímenes</div>
           <div className="text-gray-500 text-sm mt-2">

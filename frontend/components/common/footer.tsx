@@ -10,8 +10,8 @@ export function Footer() {
           {/* Brand Section */}
           <div className="md:col-span-2">
             <div className="flex items-center mb-4">
-              <span className="text-3xl mr-3">🚨</span>
-              <span className="text-2xl font-bold">CrimenAlert</span>
+              <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain mr-1" />
+              <span className="text-2xl font-bold">DaniDenuncia</span>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Sistema inteligente de reportes de crímenes por WhatsApp para Colombia. 
@@ -138,7 +138,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-center md:text-left mb-4 md:mb-0">
               <p className="text-gray-400 text-sm">
-                © 2024 CrimenAlert Colombia. Construido con ❤️ para comunidades más seguras.
+                © 2024 DaniDenuncia. Construido con ❤️ para comunidades más seguras.
               </p>
               <p className="text-gray-500 text-xs mt-1">
                 Este es un proyecto de demostración tecnológica. No está afiliado con entidades gubernamentales.

@@ -27,8 +27,9 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
+            <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain mr-1" />
             <div className="text-2xl font-bold text-primary-700">
-              🚨 CrimenAlert
+              DaniDenuncia
             </div>
           </div>
 

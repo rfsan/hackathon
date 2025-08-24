@@ -13,15 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CrimenAlert Colombia | Reporta Crímenes por WhatsApp",
+  title: "DaniDenuncia Colombia | Reporta Crímenes por WhatsApp",
   description: "Sistema inteligente de reportes de crímenes por WhatsApp para Colombia. IA agrupa reportes similares y los visualiza en tiempo real para crear comunidades más seguras.",
   keywords: "reportar crimen colombia, whatsapp crimen, seguridad ciudadana, inteligencia artificial, reporte anonimo",
-  authors: [{ name: "CrimenAlert Team" }],
+  authors: [{ name: "DaniDenuncia Team" }],
   openGraph: {
-    title: "CrimenAlert Colombia | Reporta Crímenes por WhatsApp",
+    title: "DaniDenuncia Colombia | Reporta Crímenes por WhatsApp",
     description: "Sistema inteligente que agrupa reportes de crímenes usando IA y los visualiza en tiempo real",
-    url: "https://crimenalert.co",
-    siteName: "CrimenAlert Colombia",
+    url: "https://www.danidenuncia.lat",
+    siteName: "DaniDenuncia",
     locale: "es_CO",
     type: "website",
   },

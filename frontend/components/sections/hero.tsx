@@ -24,12 +24,11 @@ export function HeroSection() {
       </div>
       
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
         <div className="text-center">
           {/* Main Heading */}
-          <div className="mb-8">
-            <div className="text-6xl mb-4 animate-bounce">🚨</div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          <div className="mb-12 sm:mb-16 lg:mb-20">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-8 sm:mb-10 lg:mb-12 leading-tight">
               Reporta Crímenes por{" "}
               <span className="text-green-600">WhatsApp</span>
               <br />
@@ -38,7 +37,7 @@ export function HeroSection() {
           </div>
 
           {/* Subtitle */}
-          <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl sm:text-2xl text-gray-600 mb-16 sm:mb-20 lg:mb-24 max-w-4xl mx-auto leading-relaxed">
             Sistema inteligente que agrupa reportes similares usando{" "}
             <span className="font-semibold text-purple-600">Inteligencia Artificial</span> y los visualiza en{" "}
             <span className="font-semibold text-blue-600">tiempo real</span> para crear{" "}
@@ -46,7 +45,7 @@ export function HeroSection() {
           </p>
 
           {/* WhatsApp Number Display */}
-          <div className="mb-12 p-6 bg-green-50 border-2 border-green-200 rounded-2xl inline-block">
+          <div className="mb-16 sm:mb-20 lg:mb-24 p-6 bg-green-50 border-2 border-green-200 rounded-2xl inline-block">
             <div className="text-green-700 font-medium mb-2">Número oficial de WhatsApp:</div>
             <div className="text-3xl font-bold text-green-800 flex items-center justify-center gap-3">
               <span className="text-4xl">📱</span>
@@ -55,7 +54,7 @@ export function HeroSection() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-20 sm:mb-24 lg:mb-28">
             <Button
               onClick={openWhatsApp}
               size="lg"
@@ -86,7 +85,7 @@ export function HeroSection() {
           </div>
 
           {/* Features */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto">
             <div className="bg-white/70 backdrop-blur-sm rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="text-3xl mb-3">⚡</div>
               <h3 className="font-semibold text-gray-900 mb-2">Respuesta Rápida</h3>
@@ -105,7 +104,7 @@ export function HeroSection() {
           </div>
 
           {/* Emergency Notice */}
-          <div className="mt-12 p-4 bg-red-50 border border-red-200 rounded-lg max-w-2xl mx-auto">
+          <div className="mt-16 sm:mt-20 lg:mt-24 p-4 sm:p-6 bg-red-50 border border-red-200 rounded-lg max-w-2xl mx-auto">
             <p className="text-red-800 font-medium">
               🚨 <strong>Emergencia:</strong> Si estás en peligro inmediato, llama al <strong>123</strong> o contacta a la Policía Nacional
             </p>

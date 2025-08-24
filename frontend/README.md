@@ -1,4 +1,4 @@
-# CrimenAlert Colombia - Frontend
+# DaniDenuncia - Frontend
 
 ## 🎯 Descripción
 Landing page responsive en español para el sistema de reportes de crímenes por WhatsApp. Construida con Next.js 14, Tailwind CSS y componentes shadcn/ui.
@@ -102,7 +102,7 @@ frontend/
 
 ### Configuración Actual
 ```typescript
-title: "CrimenAlert Colombia | Reporta Crímenes por WhatsApp"
+title: "DaniDenuncia | Reporta Crímenes por WhatsApp"
 description: "Sistema inteligente de reportes de crímenes por WhatsApp para Colombia..."
 locale: "es_CO"
 keywords: "reportar crimen colombia, whatsapp crimen, seguridad ciudadana..."
