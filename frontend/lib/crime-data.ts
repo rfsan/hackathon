@@ -254,14 +254,29 @@ export const getCrimeTypeName = (crime_type: string): string => {
 };
 
 // Function to format report time for display
-export const formatReportTime = (report_time: string): string => {
-  const date = new Date(report_time);
-  return date.toLocaleString("es-CO", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "America/Bogota"
-  });
+export const formatReportTime = (report_time: string | undefined | null): string => {
+  if (!report_time) {
+    return "Fecha no disponible";
+  }
+  
+  try {
+    const date = new Date(report_time);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "Fecha inválida";
+    }
+    
+    return date.toLocaleString("es-CO", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "America/Bogota"
+    });
+  } catch (error) {
+    console.error("Error formatting date:", error, "Input:", report_time);
+    return "Error en fecha";
+  }
 };
