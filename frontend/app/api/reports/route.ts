@@ -51,7 +51,7 @@ export async function GET(request: Request) {
       report_details: r.report_details || `Reporte de ${r.crime_category} en coordenadas ${r.latitude}, ${r.longitude}`,
       messages: r.messages || null,
       location: r.location || null,
-      priority_level: r.priority_level || Math.floor(Math.random() * 3) + 2, // Random priority 2-4 for demo
+      priority_level: r.priority_level,
       created_at: r.created_at || r.report_time,
       updated_at: r.updated_at || r.report_time,
     }))

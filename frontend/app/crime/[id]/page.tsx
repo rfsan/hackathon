@@ -6,6 +6,74 @@ import Link from "next/link";
 import { getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
 import { getFileIcon, getFileTypeColor, formatFileSize, getFileUrl, getDirectFileUrl, type ReportFile } from "@/lib/file-utils";
 
+interface TextFileDisplayProps {
+  reportId: string;
+  file: ReportFile;
+}
+
+function TextFileDisplay({ reportId, file }: TextFileDisplayProps) {
+  const [content, setContent] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const loadContent = async () => {
+    if (content || loading) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/files/${reportId}/${file.name.split('/').pop()}`);
+      if (response.ok) {
+        const text = await response.text();
+        setContent(text);
+      } else {
+        setContent('Error al cargar el archivo');
+      }
+    } catch {
+      setContent('Error al cargar el archivo');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleExpanded = () => {
+    if (!expanded && !content) {
+      loadContent();
+    }
+    setExpanded(!expanded);
+  };
+
+  return (
+    <div className="mb-3">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-lg">📝</span>
+        <span className="text-sm font-medium text-gray-700">Archivo de texto</span>
+        <span className="text-xs text-gray-500">
+          ({file.extension.toUpperCase()} - {formatFileSize(file.size)})
+        </span>
+      </div>
+      <div className="bg-gray-50 rounded-lg p-3">
+        <button
+          onClick={toggleExpanded}
+          className="text-blue-600 hover:text-blue-700 text-sm font-medium mb-2 flex items-center gap-1"
+        >
+          {expanded ? '▼' : '▶'} {expanded ? 'Ocultar contenido' : 'Ver contenido'}
+        </button>
+        {expanded && (
+          <div className="bg-white rounded border p-3">
+            {loading ? (
+              <div className="text-gray-500 text-sm">Cargando...</div>
+            ) : content ? (
+              <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono max-h-64 overflow-y-auto">
+                {content}
+              </pre>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 interface Crime {
   crime_id: string;
   crime_summary: string | null;
@@ -380,6 +448,17 @@ export default function CrimeDetailPage() {
                                   </div>
                                 ))}
 
+                              {/* Text files */}
+                              {report.files
+                                .filter(file => file.type === 'text' || file.extension === 'txt')
+                                .map((file, fileIndex) => (
+                                  <TextFileDisplay
+                                    key={`text-${fileIndex}`}
+                                    reportId={report.report_id}
+                                    file={file}
+                                  />
+                                ))}
+
                               {/* Image files */}
                               {report.files
                                 .filter(file => file.type === 'image')
@@ -406,7 +485,7 @@ export default function CrimeDetailPage() {
                               {/* Other file types as badges */}
                               <div className="flex flex-wrap gap-2">
                                 {report.files
-                                  .filter(file => file.type !== 'audio' && file.type !== 'image')
+                                  .filter(file => file.type !== 'audio' && file.type !== 'image' && file.type !== 'text' && file.extension !== 'txt')
                                   .map((file, fileIndex) => (
                                     <div
                                       key={fileIndex}
