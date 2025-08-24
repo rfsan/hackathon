@@ -199,7 +199,7 @@ export function CrimeMap() {
     <div className="relative flex-1">
       <MapContainer
         center={[4.5709, -74.297]} // Colombia center
-        zoom={6}
+        zoom={10}
         minZoom={5}
         maxZoom={18}
         className="w-full h-[calc(100vh-140px)] rounded-xl shadow-2xl z-0 overflow-hidden border border-gray-200"
@@ -310,95 +310,7 @@ export function CrimeMap() {
         </div>
       )}
       
-      {/* Legend */}
-      <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-gray-200 p-5 max-w-xs z-[1000] max-h-[70vh] overflow-y-auto">
-        
-        {/* Crime IDs */}
-        <div className="space-y-2 text-sm mb-5">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-blue-600">🆔</span>
-            <h4 className="font-semibold text-gray-800">Crime IDs</h4>
-          </div>
-          {Array.from(new Set(reports.filter(d => d.crime_id).map(d => d.crime_id))).map(crimeId => (
-            <div key={crimeId} className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
-              <div 
-                className="w-5 h-5 rounded-full mr-3 border-2 border-white shadow-md flex-shrink-0"
-                style={{ backgroundColor: getCrimeColor(crimeId) }}
-              ></div>
-              <span className="font-medium text-gray-700">Crime-{crimeId?.substring(0, 8)}</span>
-            </div>
-          ))}
-          <div className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
-            <div className="w-5 h-5 rounded-full bg-gray-500 mr-3 border-2 border-white shadow-md flex-shrink-0"></div>
-            <span className="font-medium text-gray-700">Sin agrupar</span>
-          </div>
-        </div>
-
-        {/* Crime Types */}
-        <div className="space-y-2 text-sm border-t border-gray-200 pt-4">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-red-600">🏷️</span>
-            <h4 className="font-semibold text-gray-800">Tipos de Crimen</h4>
-          </div>
-          {Array.from(new Set(reports.map(d => d.crime_category))).map(crimeType => (
-            <div key={crimeType} className="flex items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
-              <span className="text-xl mr-3 flex-shrink-0">{getCrimeTypeIcon(crimeType)}</span>
-              <span className="text-xs font-medium text-gray-700 leading-tight">{getCrimeTypeName(crimeType)}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 mt-4 border-l-4 border-blue-500">
-          <div className="text-xs text-gray-700 space-y-1">
-            <div className="flex items-center gap-1">
-              <span className="text-green-600">✓</span>
-              <span>Haz clic para detalles</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-blue-600">●</span>
-              <span>Tamaño = agrupación</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-purple-600">🎨</span>
-              <span>Color = crime_id</span>
-            </div>
-          </div>
-        </div>
-      </div>
       
-      {/* Statistics Panel */}
-      <div className="absolute bottom-4 left-4 bg-gradient-to-br from-white to-gray-50 backdrop-blur-md rounded-xl shadow-2xl border border-gray-200 p-5 z-[1000]">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-sm">📈</span>
-          </div>
-          <h3 className="font-bold text-gray-900 text-lg">Estadísticas en vivo</h3>
-          <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isPolling ? 'bg-blue-400 animate-ping' : 'bg-green-400 animate-pulse'}`}></div>
-            <span className="text-xs text-gray-600">
-              {isPolling ? 'Actualizando...' : `Actualizado: ${lastUpdate.toLocaleTimeString()}`}
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
-            <div className="text-3xl font-bold text-blue-600 mb-1">
-              {reports.length}
-            </div>
-            <div className="text-gray-700 font-medium">Total reportes</div>
-            <div className="text-xs text-blue-600 mt-1">📊</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
-            <div className="text-3xl font-bold text-green-600 mb-1">
-              {new Set(reports.filter(d => d.crime_id).map(d => d.crime_id)).size}
-            </div>
-            <div className="text-gray-700 font-medium">Crímenes detectados</div>
-            <div className="text-xs text-green-600 mt-1">🔎</div>
-          </div>
-        </div>
-      </div>
 
     </div>
   );
