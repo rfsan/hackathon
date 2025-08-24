@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCrimeColor, getCrimeTypeIcon, getCrimeTypeName, formatReportTime } from "@/lib/crime-data";
@@ -10,7 +10,7 @@ interface Crime {
   crime_summary: string | null;
   crime_type: string | null;
   followup_actions: string | null;
-  location: any;
+  location: unknown;
   created_at: string;
   updated_at: string;
 }
@@ -20,11 +20,12 @@ interface Report {
   user_id: string | null;
   report_path: string | null;
   report_details: string | null;
-  messages: any;
-  location: any;
+  messages: unknown;
+  location: unknown;
   priority_level: number | null;
   crime_category: string;
   crime_id: string;
+  report_time: string;
   created_at: string;
   updated_at: string;
 }
@@ -36,7 +37,6 @@ interface CrimeData {
 
 export default function CrimeDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const [crimeData, setCrimeData] = useState<CrimeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -233,7 +233,7 @@ export default function CrimeDetailPage() {
                             <p className="text-gray-700 text-sm mb-3">{report.report_details}</p>
                           )}
                           
-                          {report.messages && typeof report.messages === 'object' && (
+                          {report.messages != null && (
                             <div className="text-xs text-gray-500">
                               Mensajes de WhatsApp incluidos
                             </div>

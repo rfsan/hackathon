@@ -32,8 +32,8 @@ export function CrimeMap() {
   ]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
-  const [isPolling, setIsPolling] = useState(false);
+  const [, setLastUpdate] = useState<Date>(new Date());
+  const [, setIsPolling] = useState(false);
 
   // Fetch data from our API route with 30-second polling
   useEffect(() => {
@@ -86,7 +86,7 @@ export function CrimeMap() {
     return () => {
       clearInterval(pollInterval)
     }
-  }, []); // Empty dependency array - we want this to run once and set up polling
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [hoveredPoint, setHoveredPoint] = useState<{
     longitude: number;
     latitude: number;

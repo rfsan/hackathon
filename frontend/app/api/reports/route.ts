@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
     console.log('Attempting to call RPC function...')
 
-    let query = supabase.rpc('get_reports_with_coordinates').returns<Report[]>();
+    const query = supabase.rpc('get_reports_with_coordinates').returns<Report[]>();
     
     // If crime_id is provided, we need to filter differently
     // Since the RPC might not support filtering, we'll filter after

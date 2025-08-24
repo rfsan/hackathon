@@ -3,10 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const crimeId = params.id;
+    const { id: crimeId } = await params;
     
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_API_KEY;
