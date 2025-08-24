@@ -17,7 +17,7 @@ export async function GET() {
       auth: {
         persistSession: false,
         autoRefreshToken: false,
-      },
+      }
     })
 
     console.log('Attempting to call RPC function...')

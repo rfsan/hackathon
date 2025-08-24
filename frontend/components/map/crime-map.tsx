@@ -81,7 +81,7 @@ export function CrimeMap() {
     // Set up polling every 30 seconds
     const pollInterval = setInterval(() => {
       fetchReports(true)
-    }, 30000)
+    }, 10000)
 
     // Cleanup interval on unmount
     return () => {
